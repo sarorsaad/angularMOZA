@@ -1,0 +1,1201 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>درس Angular التفاعلي - الأساسيات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background: #34495e;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            background: #3498db;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #e74c3c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            z-index: 1001;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #e74c3c, #f39c12);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        main {
+            padding: 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-right: 5px solid #3498db;
+        }
+
+        .section h2 {
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .section h3 {
+            color: #34495e;
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem 0;
+        }
+
+        .collapsible {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin: 1rem 0;
+        }
+
+        .collapsible-header {
+            background: #e9ecef;
+            padding: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .collapsible-header:hover {
+            background: #dee2e6;
+        }
+
+        .collapsible-content {
+            padding: 1rem;
+            display: none;
+        }
+
+        .collapsible-content.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: 'Code';
+            position: absolute;
+            top: 0.5rem;
+            left: 1rem;
+            background: #4a5568;
+            color: #e2e8f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 1rem;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            margin: 1rem 0;
+            border-right: 4px solid #f39c12;
+        }
+
+        .quiz {
+            background: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .quiz h4 {
+            color: #2d5a27;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-option {
+            background: white;
+            border: 2px solid #c3e6c3;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #f0f8f0;
+            border-color: #28a745;
+        }
+
+        .quiz-option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .quiz-option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .diagram {
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .mvc-diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .mvc-component {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            min-width: 150px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .mvc-component:hover {
+            transform: translateY(-5px);
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: #e74c3c;
+            margin: 0 1rem;
+        }
+
+        .file-structure {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+
+        .file-item {
+            padding: 0.2rem 0;
+            padding-right: 1rem;
+        }
+
+        .folder {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .file {
+            color: #3498db;
+        }
+
+        .list-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 5px;
+            border-right: 3px solid #3498db;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-item {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+
+            .mvc-diagram {
+                flex-direction: column;
+            }
+
+            .logo {
+                font-size: 2rem;
+            }
+        }
+
+        .btn {
+            background: #3498db;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">Angular Framework</div>
+            <div class="subtitle">دورة شاملة لتعلم أساسيات إطار العمل Angular</div>
+        </header>
+
+        <nav>
+            <div class="nav-container">
+                <a href="#intro" class="nav-item" data-section="intro">مقدمة الدورة</a>
+                <a href="#fundamentals" class="nav-item" data-section="fundamentals">أساسيات تطبيقات الويب</a>
+                <a href="#evolution" class="nav-item" data-section="evolution">تطور بنية الويب</a>
+                <a href="#frameworks" class="nav-item" data-section="frameworks">أطر العمل الأمامية</a>
+                <a href="#spa" class="nav-item" data-section="spa">تطبيقات الصفحة الواحدة</a>
+                <a href="#versions" class="nav-item" data-section="versions">إصدارات Angular والتثبيت</a>
+                <a href="#structure" class="nav-item" data-section="structure">بنية المشروع و MVC</a>
+                <a href="#creating" class="nav-item" data-section="creating">إنشاء مشاريع Angular</a>
+            </div>
+        </nav>
+
+        <main>
+            <section id="intro" class="section">
+                <h2>🎯 مقدمة الدورة</h2>
+                
+                <p>مرحباً بكم في دورة Angular الشاملة! سنتعلم خلال هذه الدورة أساسيات إطار العمل Angular وكيفية بناء تطبيقات ويب حديثة وتفاعلية.</p>
+
+                <h3>محاور الدورة</h3>
+                <div class="list-item">
+                    <strong>المفاهيم الأساسية:</strong> فهم بنية تطبيقات الويب والمكونات (Components)
+                </div>
+                <div class="list-item">
+                    <strong>الربط والتفاعل:</strong> تعلم آليات الربط (Binding) والأحداث
+                </div>
+                <div class="list-item">
+                    <strong>الخدمات:</strong> إنشاء واستخدام الخدمات (Services) والتواصل مع APIs
+                </div>
+                <div class="list-item">
+                    <strong>المفاهيم المتقدمة:</strong> التحميل الكسول (Lazy Loading) والنماذج التفاعلية (Reactive Forms)
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        معايير التقييم
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <ul>
+                            <li>الحضور والمشاركة الفعّالة في المحاضرات وورش العمل</li>
+                            <li>تسليم المهام العملية في الموعد المحدد</li>
+                            <li>التفاعل والمبادرة في طرح الأسئلة</li>
+                            <li>إنجاز مشروع تطبيقي في نهاية الدورة</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quiz">
+                    <h4>سؤال تفاعلي: ما هو الهدف الرئيسي من تعلم Angular؟</h4>
+                    <div class="quiz-option" onclick="selectQuizOption(this, false)">تعلم لغة برمجة جديدة</div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, true)">بناء تطبيقات ويب تفاعلية وحديثة</div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, false)">تطوير تطبيقات الهاتف المحمول فقط</div>
+                </div>
+            </section>
+
+            <section id="fundamentals" class="section">
+                <h2>🌐 أساسيات تطبيقات الويب</h2>
+
+                <p>قبل الخوض في Angular، دعونا نفهم الأساسيات التي تقوم عليها تطبيقات الويب الحديثة.</p>
+
+                <h3>بنية تطبيق الويب</h3>
+                <div class="diagram">
+                    <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
+                        <div class="mvc-component">
+                            <h4>العميل (Client)</h4>
+                            <p>المتصفح</p>
+                            <small>HTML, CSS, JavaScript</small>
+                        </div>
+                        <div class="arrow">↔️</div>
+                        <div class="mvc-component">
+                            <h4>الخادم (Server)</h4>
+                            <p>الخلفية</p>
+                            <small>Node.js, PHP, .NET, Java</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        آلية التواصل بين العميل والخادم
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <h4>مكونات الطلب (Request):</h4>
+                        <ul>
+                            <li><strong>URL:</strong> عنوان المورد المطلوب</li>
+                            <li><strong>Method:</strong> طريقة الطلب (GET, POST, PUT, DELETE)</li>
+                            <li><strong>Body:</strong> البيانات المرسلة مع الطلب</li>
+                            <li><strong>Headers:</strong> معلومات إضافية عن الطلب</li>
+                        </ul>
+
+                        <h4>مكونات الاستجابة (Response):</h4>
+                        <ul>
+                            <li><strong>Status Code:</strong> رمز حالة الاستجابة</li>
+                            <li><strong>Body:</strong> البيانات المرجعة</li>
+                            <li><strong>Headers:</strong> معلومات إضافية عن الاستجابة</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <strong>ملاحظة مهمة:</strong> المتصفح يفهم ثلاث لغات فقط: HTML و CSS و JavaScript. أي لغة أخرى مثل TypeScript أو SASS يجب تحويلها (تصريفها) إلى هذه اللغات.
+                </div>
+            </section>
+
+            <section id="evolution" class="section">
+                <h2>🔄 تطور بنية تطبيقات الويب</h2>
+
+                <h3>النماذج المختلفة لبناء التطبيقات</h3>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        النموذج التقليدي (Monolithic)
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>في الماضي، كانت الواجهة الأمامية والخلفية تُبنيان ضمن مشروع واحد. المطور كان مسؤولاً عن كلا الجزأين.</p>
+                        <div class="list-item">
+                            <strong>المزايا:</strong> بساطة في النشر والإدارة
+                        </div>
+                        <div class="list-item">
+                            <strong>العيوب:</strong> صعوبة في التطوير والصيانة، عدم المرونة
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        فصل الواجهات (Separated Architecture)
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>النموذج الحديث حيث تُفصل الواجهة الأمامية عن الخلفية، ويتواصلان عبر APIs.</p>
+                        <div class="list-item">
+                            <strong>المزايا:</strong> تخصص أفضل، جودة أعلى، مرونة في التطوير
+                        </div>
+                        <div class="list-item">
+                            <strong>العيوب:</strong> تعقيد أكبر في التنسيق والنشر
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        التطبيقات بلا خادم (Serverless)
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>استخدام خدمات جاهزة مثل Firebase لتوفير وظائف الواجهة الخلفية دون كتابة كود.</p>
+                        <div class="list-item">
+                            <strong>المزايا:</strong> سرعة في التطوير، تكلفة أقل للمشاريع الصغيرة
+                        </div>
+                        <div class="list-item">
+                            <strong>العيوب:</strong> محدودية في التحكم، قد لا تناسب المشاريع المعقدة
+                        </div>
+                        
+                        <div class="code-block">
+// مثال على استخدام Firebase
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+
+const firebaseConfig = {
+  // إعدادات Firebase
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="frameworks" class="section">
+                <h2>⚛️ أطر العمل الأمامية</h2>
+
+                <h3>لماذا نستخدم أطر العمل؟</h3>
+                <p>بالرغم من إمكانية بناء الواجهة الأمامية بـ HTML و CSS و JavaScript فقط، إلا أن أطر العمل توفر:</p>
+
+                <div class="list-item">
+                    <strong>بنية منظمة:</strong> هيكل واضح ومنظم للمشروع
+                </div>
+                <div class="list-item">
+                    <strong>إعادة استخدام الكود:</strong> مكونات قابلة للاستخدام المتكرر
+                </div>
+                <div class="list-item">
+                    <strong>أدوات جاهزة:</strong> مكتبات ووظائف مُدمجة
+                </div>
+                <div class="list-item">
+                    <strong>صيانة أسهل:</strong> كود أكثر تنظيماً وقابلية للصيانة
+                </div>
+
+                <h3>الفرق بين إطار العمل (Framework) والمكتبة (Library)</h3>
+                
+                <div class="diagram">
+                    <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 2rem;">
+                        <div class="mvc-component">
+                            <h4>إطار العمل (Angular)</h4>
+                            <p>يوفر هيكلاً كاملاً</p>
+                            <small>أنت تعمل داخل الإطار</small>
+                        </div>
+                        <div style="font-size: 2rem;">⚖️</div>
+                        <div class="mvc-component">
+                            <h4>المكتبة (React)</h4>
+                            <p>توفر أدوات محددة</p>
+                            <small>أنت تستخدم المكتبة في كودك</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        مقارنة بين أشهر أطر العمل
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                            <tr style="background: #f8f9fa;">
+                                <th style="padding: 1rem; border: 1px solid #dee2e6;">الإطار</th>
+                                <th style="padding: 1rem; border: 1px solid #dee2e6;">النوع</th>
+                                <th style="padding: 1rem; border: 1px solid #dee2e6;">المطور</th>
+                                <th style="padding: 1rem; border: 1px solid #dee2e6;">المزايا</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">Angular</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">Framework</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">Google</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">شامل، TypeScript، مناسب للمشاريع الكبيرة</td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">React</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">Library</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">Facebook</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">مرونة عالية، مجتمع كبير</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">Vue</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">Framework</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">Evan You</td>
+                                <td style="padding: 1rem; border: 1px solid #dee2e6;">سهولة التعلم، أداء ممتاز</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="quiz">
+                    <h4>سؤال: ما هو الفرق الرئيسي بين إطار العمل والمكتبة؟</h4>
+                    <div class="quiz-option" onclick="selectQuizOption(this, false)">إطار العمل أصغر من المكتبة</div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, true)">إطار العمل يوفر هيكلاً كاملاً، بينما المكتبة توفر أدوات محددة</div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, false)">لا يوجد فرق بينهما</div>
+                </div>
+            </section>
+
+            <section id="spa" class="section">
+                <h2>📱 تطبيقات الصفحة الواحدة (SPA)</h2>
+
+                <p>تطبيقات الصفحة الواحدة هي تطبيقات ويب تحمّل صفحة HTML واحدة فقط، وتحديث المحتوى ديناميكياً دون إعادة تحميل الصفحة.</p>
+
+                <h3>كيف تعمل تطبيقات SPA؟</h3>
+                
+                <div class="diagram">
+                    <div class="mvc-diagram">
+                        <div class="mvc-component">
+                            <h4>صفحة واحدة</h4>
+                            <p>index.html</p>
+                        </div>
+                        <div class="arrow">+</div>
+                        <div class="mvc-component">
+                            <h4>مكونات متعددة</h4>
+                            <p>Components</p>
+                        </div>
+                        <div class="arrow">=</div>
+                        <div class="mvc-component">
+                            <h4>تطبيق تفاعلي</h4>
+                            <p>بدون إعادة تحميل</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        مزايا تطبيقات SPA
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="list-item">
+                            <strong>تجربة مستخدم سلسة:</strong> لا توجد إعادة تحميل بين الصفحات
+                        </div>
+                        <div class="list-item">
+                            <strong>أداء أفضل:</strong> تحميل المحتوى مرة واحدة فقط
+                        </div>
+                        <div class="list-item">
+                            <strong>استجابة سريعة:</strong> التنقل الفوري بين الأقسام
+                        </div>
+                        <div class="list-item">
+                            <strong>سهولة التطوير:</strong> بنية مكونات منظمة
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        التحميل الكسول (Lazy Loading)
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>لحل مشكلة التحميل البطيء للتطبيقات الكبيرة، يمكن استخدام التحميل الكسول:</p>
+                        
+                        <div class="code-block">
+// مثال على التحميل الكسول في Angular
+const routes: Routes = [
+  {
+    path: 'products',
+    loadChildren: () => import('./products/products.module').then(m => m.ProductsModule)
+  },
+  {
+    path: 'users',
+    loadChildren: () => import('./users/users.module').then(m => m.UsersModule)
+  }
+];
+                        </div>
+
+                        <div class="list-item">
+                            <strong>فوائد التحميل الكسول:</strong> تحسين الأداء، تقليل وقت التحميل الأولي، توفير عرض النطاق
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="versions" class="section">
+                <h2>🔢 إصدارات Angular وتجهيز بيئة العمل</h2>
+
+                <h3>تاريخ الإصدارات</h3>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        AngularJS (الإصدار الأول)
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>كان يعمل بـ JavaScript، ولكن فريق Angular قرر الانتقال إلى TypeScript وإجراء تحديثات جذرية.</p>
+                        <div class="list-item">
+                            <strong>المشكلة:</strong> كان يعتمد على JavaScript فقط مما جعله محدود الإمكانيات
+                        </div>
+                        <div class="list-item">
+                            <strong>الحل:</strong> الانتقال إلى TypeScript لتوفير مزايا أفضل
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        Angular 2 وما بعدها
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>ظهر هذا الإصدار كإطار عمل جديد كليًا يعتمد على TypeScript، مما فرض على المطورين إعادة بناء مشاريعهم.</p>
+                        <div class="highlight">
+                            <strong>تعهد الفريق:</strong> أن تكون التحديثات اللاحقة (مثل Angular 3 و 4 وحتى 17) مجرد تحسينات لا تُغير جوهر الإطار.
+                        </div>
+                        <div class="list-item">
+                            <strong>Angular 17:</strong> أحدث إصدار، وقد بدأ بالظهور قبل حوالي أربعة أشهر
+                        </div>
+                        <div class="list-item">
+                            <strong>دورة الإصدارات:</strong> تطلق Angular إصدارًا جديدًا كل ستة أشهر تقريبًا
+                        </div>
+                    </div>
+                </div>
+
+                <h3>تجهيز بيئة العمل</h3>
+                <p>للبدء في العمل على مشاريع Angular، يجب القيام بالخطوات التالية:</p>
+
+                <div class="list-item">
+                    <strong>1. تثبيت Node.js:</strong> يُعد Node.js ضروريًا لأن Angular تعتمد عليه في إدارة الحزم وتشغيل أوامرها.
+                </div>
+
+                <div class="list-item">
+                    <strong>2. تثبيت Angular CLI:</strong> وهو واجهة سطر الأوامر الخاصة بـ Angular.
+                </div>
+
+                <div class="code-block">
+# تثبيت Angular CLI عالمياً
+npm install -g @angular/cli
+
+# التحقق من الإصدار المثبت
+ng v
+# أو
+ng version
+                </div>
+
+                <div class="quiz">
+                    <h4>سؤال: ما هو الأمر المستخدم لتثبيت Angular CLI؟</h4>
+                    <div class="quiz-option" onclick="selectQuizOption(this, false)">npm install angular-cli</div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, true)">npm install -g @angular/cli</div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, false)">npm install -g angular</div>
+                </div>
+            </section>
+
+            <section id="structure" class="section">
+                <h2>🏗️ بنية المشروع في Angular</h2>
+
+                <h3>نمط MVC المعماري</h3>
+                <p>تعتمد Angular على نمط التصميم المعماري MVC (Model-View-Controller)، والذي يقسم المشروع إلى ثلاثة أجزاء رئيسية:</p>
+
+                <div class="diagram">
+                    <div class="mvc-diagram">
+                        <div class="mvc-component">
+                            <h4>النموذج (Model)</h4>
+                            <p>البيانات</p>
+                            <small>التفاعل مع قواعد البيانات</small>
+                        </div>
+                        <div class="arrow">↔️</div>
+                        <div class="mvc-component">
+                            <h4>المتحكم (Controller)</h4>
+                            <p>منطق العمل</p>
+                            <small>ربط النموذج بالواجهة</small>
+                        </div>
+                        <div class="arrow">↔️</div>
+                        <div class="mvc-component">
+                            <h4>الواجهة (View)</h4>
+                            <p>العرض المرئي</p>
+                            <small>HTML و CSS</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        تفاصيل نمط MVC
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="list-item">
+                            <strong>النموذج (Model):</strong> يمثل البيانات ويهتم بالتفاعل مع قواعد البيانات.
+                        </div>
+                        <div class="list-item">
+                            <strong>الواجهة (View):</strong> تمثل الواجهة المرئية التي يتفاعل معها المستخدم (صفحات HTML و CSS).
+                        </div>
+                        <div class="list-item">
+                            <strong>المتحكم (Controller):</strong> يحتوي على منطق العمل والوظائف التي تربط بين النموذج والواجهة. عندما يتفاعل المستخدم مع الواجهة، يقوم المتحكم بالتعامل مع الطلبات، والتواصل مع النموذج لجلب البيانات أو تحديثها، ثم يقوم بتحديث الواجهة.
+                        </div>
+                    </div>
+                </div>
+
+                <h3>هيكلة المكونات (Components)</h3>
+                <p>في Angular، كل مكون (Component) يتكون من أربعة ملفات رئيسية:</p>
+
+                <div class="file-structure">
+                    <div class="file-item">
+                        <span class="file">📄 component.html</span> - هيكل الواجهة المرئية
+                    </div>
+                    <div class="file-item">
+                        <span class="file">🎨 component.css</span> - تنسيقات المكون
+                    </div>
+                    <div class="file-item">
+                        <span class="file">⚙️ component.ts</span> - منطق العمل (المتحكم)
+                    </div>
+                    <div class="file-item">
+                        <span class="file">🧪 component.spec.ts</span> - اختبارات الوحدة
+                    </div>
+                </div>
+
+                <div class="code-block">
+// مثال على مكون Angular
+@Component({
+  selector: 'app-example',
+  templateUrl: './example.component.html',
+  styleUrls: ['./example.component.css']
+})
+export class ExampleComponent {
+  title = 'مرحباً بكم في Angular';
+
+  onClick() {
+    console.log('تم النقر على الزر');
+  }
+}
+                </div>
+
+                <h3>نمط العمل قبل وبعد Angular 17</h3>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        قبل Angular 17 (نمط الوحدات - Modules)
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>كانت المكونات تُنشأ داخل "وحدات" (Modules). كل مشروع كان يحتوي على وحدة افتراضية تسمى <code>AppModule</code>، وتُنشأ جميع المكونات داخلها.</p>
+                        <div class="list-item">
+                            <strong>المناسب لـ:</strong> المشاريع الكبيرة والمعقدة
+                        </div>
+                        <div class="list-item">
+                            <strong>المزايا:</strong> تقسيم المشروع إلى عدة وحدات منظمة
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        بعد Angular 17 (نمط المكونات المستقلة - Standalone Components)
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>أصبح النمط الافتراضي هو "المكونات المستقلة"، حيث تُنشأ المكونات بشكل مستقل دون الحاجة لوحدة لتضمينها.</p>
+                        <div class="list-item">
+                            <strong>المناسب لـ:</strong> المشاريع الصغيرة والمتوسطة
+                        </div>
+                        <div class="list-item">
+                            <strong>المزايا:</strong> بساطة أكثر، أقل تعقيداً
+                        </div>
+                        <div class="highlight">
+                            <strong>ملاحظة:</strong> لا يزال بالإمكان استخدام الوحدات إذا لزم الأمر. في هذه الدورة، سنبدأ بالعمل على نمط الوحدات لفهم بنيته، ثم ننتقل إلى نمط المكونات المستقلة.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="creating" class="section">
+                <h2>🚀 إنشاء وتشغيل مشروع Angular</h2>
+
+                <h3>خطوات إنشاء المشروع</h3>
+
+                <div class="list-item">
+                    <strong>1.</strong> افتح موجه الأوامر (CMD) أو الطرفية (Terminal)
+                </div>
+                <div class="list-item">
+                    <strong>2.</strong> انتقل إلى المجلد الذي ترغب في إنشاء المشروع بداخله
+                </div>
+                <div class="list-item">
+                    <strong>3.</strong> استخدم الأمر التالي لإنشاء مشروع جديد
+                </div>
+
+                <div class="code-block">
+# إنشاء مشروع جديد (نمط المكونات المستقلة - Angular 17+)
+ng new lecture1
+
+# إنشاء مشروع بنمط الوحدات (قبل Angular 17)
+ng new lecture1 --no-standalone
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        خيارات الإعداد أثناء الإنشاء
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <div class="list-item">
+                            <strong>تنسيق أوراق الأنماط:</strong> سيُطلب منك اختيار (CSS, Sass, Less). اختر <code>css</code>
+                        </div>
+                        <div class="list-item">
+                            <strong>Server-Side Rendering:</strong> سيُسأل هل ترغب في استخدامه. اختر <code>No</code>
+                        </div>
+                        <div class="list-item">
+                            <strong>التثبيت التلقائي:</strong> سيقوم Angular CLI بإنشاء هيكل المشروع وتثبيت الحزم اللازمة
+                        </div>
+                    </div>
+                </div>
+
+                <h3>هيكل المجلدات والملفات الأساسية في المشروع</h3>
+
+                <div class="file-structure">
+                    <div class="file-item">
+                        <span class="folder">📁 node_modules/</span> - جميع الحزم والمكتبات
+                    </div>
+                    <div class="file-item">
+                        <span class="file">📄 package.json</span> - تبعيات المشروع والبرامج النصية
+                    </div>
+                    <div class="file-item">
+                        <span class="file">🔒 package-lock.json</span> - الإصدارات الدقيقة للحزم
+                    </div>
+                    <div class="file-item">
+                        <span class="file">⚙️ tsconfig.json</span> - إعدادات TypeScript
+                    </div>
+                    <div class="file-item">
+                        <span class="file">🚫 .gitignore</span> - الملفات المتجاهلة في Git
+                    </div>
+                    <div class="file-item">
+                        <span class="file">📖 README.md</span> - ملف توضيحي للمشروع
+                    </div>
+                    <div class="file-item">
+                        <span class="file">🔧 .editorconfig</span> - إعدادات المحرر
+                    </div>
+                    <div class="file-item">
+                        <span class="file">⚙️ angular.json</span> - ملف إعدادات Angular الرئيسي
+                    </div>
+                </div>
+
+                <h3>الملفات الأساسية في مجلد src/ (Source)</h3>
+                <p>هذا المجلد هو المكان الذي يُوضع فيه جميع الكود الخاص بالتطبيق.</p>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        index.html - نقطة الدخول الرئيسية
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>هي نقطة الدخول الرئيسية للتطبيق (Entry Point). تُعرض هذه الصفحة في المتصفح، وتحتوي على علامة <code>&lt;app-root&gt;</code> تُستخدم لعرض المكونات الرئيسية للتطبيق.</p>
+                        <div class="code-block">
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;title&gt;MyApp&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;app-root&gt;&lt;/app-root&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        styles.css - التنسيقات العامة
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>يُستخدم هذا الملف لوضع التنسيقات العامة (Global Styles) التي تنطبق على جميع مكونات التطبيق.</p>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        main.ts - نقطة البداية
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>هو أول ملف يُشغّل عند بدء تشغيل التطبيق. يحدد هذا الملف الوحدة الرئيسية (AppModule) التي سيبدأ بها التطبيق.</p>
+                        <div class="code-block">
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import { AppModule } from './app/app.module';
+
+platformBrowserDynamic().bootstrapModule(AppModule)
+  .catch(err => console.error(err));
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        app.module.ts - الوحدة الرئيسية
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>يُعرف الوحدة الرئيسية للتطبيق (AppModule). يحتوي هذا الملف على <code>@NgModule</code> Decorator:</p>
+
+                        <div class="code-block">
+@NgModule({
+  declarations: [    // المكونات المُنشأة داخل هذه الوحدة
+    AppComponent
+  ],
+  imports: [         // الوحدات الأخرى المطلوبة
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [],     // الخدمات المُقدمة
+  bootstrap: [AppComponent]  // المكون الرئيسي
+})
+export class AppModule { }
+                        </div>
+
+                        <div class="list-item">
+                            <strong>declarations:</strong> تُدرج جميع المكونات التي تُنشأ داخل هذه الوحدة
+                        </div>
+                        <div class="list-item">
+                            <strong>imports:</strong> تُدرج الوحدات الأخرى المطلوبة
+                        </div>
+                        <div class="list-item">
+                            <strong>providers:</strong> تُدرج الخدمات (Services) التي تُقدمها هذه الوحدة
+                        </div>
+                        <div class="list-item">
+                            <strong>bootstrap:</strong> تُدرج المكون الرئيسي الذي سيُعرض عند بدء تشغيل الوحدة
+                        </div>
+                    </div>
+                </div>
+
+                <div class="collapsible">
+                    <div class="collapsible-header">
+                        app.component.ts وملفاته المرتبطة
+                        <span>+</span>
+                    </div>
+                    <div class="collapsible-content">
+                        <p>يمثل المكون الرئيسي للتطبيق، وهو أول مكون يُعرض عند تشغيل التطبيق. يتكون من:</p>
+
+                        <div class="file-structure">
+                            <div class="file-item">
+                                <span class="file">📄 app.component.html</span> - ملف HTML للمكون
+                            </div>
+                            <div class="file-item">
+                                <span class="file">🎨 app.component.css</span> - ملف CSS للمكون
+                            </div>
+                            <div class="file-item">
+                                <span class="file">⚙️ app.component.ts</span> - ملف TypeScript (منطق العمل)
+                            </div>
+                            <div class="file-item">
+                                <span class="file">🧪 app.component.spec.ts</span> - ملف اختبار الوحدة
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+@Component({
+  selector: 'app-root',           // اسم العلامة
+  templateUrl: './app.component.html',  // مسار ملف HTML
+  styleUrls: ['./app.component.css']    // مسار ملف CSS
+})
+export class AppComponent {
+  title = 'my-angular-app';
+}
+                        </div>
+                    </div>
+                </div>
+
+                <h3>تشغيل المشروع</h3>
+                <p>لتشغيل المشروع، انتقل إلى مجلد المشروع في موجه الأوامر واستخدم الأمر:</p>
+
+                <div class="code-block">
+# الانتقال إلى مجلد المشروع
+cd lecture1
+
+# تشغيل المشروع
+ng serve
+                </div>
+
+                <div class="highlight">
+                    <strong>ملاحظة:</strong> سيقوم هذا الأمر ببناء المشروع وتشغيله على خادم تطوير محلي، وعادةً ما يكون على المنفذ 4200 (مثل <code>localhost:4200</code>). سيبدأ Angular CLI في مراقبة التغييرات في ملفات المشروع وإعادة بناء التطبيق تلقائيًا عند حفظ أي تغيير.
+                </div>
+
+                <div class="quiz">
+                    <h4>سؤال: ما هو الأمر المستخدم لتشغيل مشروع Angular؟</h4>
+                    <div class="quiz-option" onclick="selectQuizOption(this, false)">ng start</div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, true)">ng serve</div>
+                    <div class="quiz-option" onclick="selectQuizOption(this, false)">ng run</div>
+                </div>
+
+                <div class="highlight">
+                    <strong>نصيحة:</strong> عند تشغيل المشروع، سيتم عرض المحتوى الموجود في <code>app.component.html</code> داخل علامة <code>&lt;app-root&gt;</code> في <code>index.html</code>. يمكن تعديل هذا المحتوى ومشاهدة التغييرات الفورية في المتصفح.
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // تفعيل القوائم القابلة للطي
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('span');
+
+                if (content.classList.contains('active')) {
+                    content.classList.remove('active');
+                    icon.textContent = '+';
+                } else {
+                    content.classList.add('active');
+                    icon.textContent = '-';
+                }
+            });
+        });
+
+        // تفعيل شريط التقدم
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.offsetHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+        });
+
+        // تفعيل التنقل السلس
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                // إزالة الفئة النشطة من جميع العناصر
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                // إضافة الفئة النشطة للعنصر المحدد
+                this.classList.add('active');
+
+                // التمرير السلس
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        });
+
+        // وظيفة الاختبارات التفاعلية
+        function selectQuizOption(element, isCorrect) {
+            // إزالة جميع الفئات السابقة
+            element.parentNode.querySelectorAll('.quiz-option').forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+
+            // إضافة الفئة المناسبة
+            if (isCorrect) {
+                element.classList.add('correct');
+            } else {
+                element.classList.add('incorrect');
+                // إظهار الإجابة الصحيحة
+                element.parentNode.querySelectorAll('.quiz-option').forEach(option => {
+                    if (option.onclick.toString().includes('true')) {
+                        option.classList.add('correct');
+                    }
+                });
+            }
+        }
+
+        // تفعيل التنقل التلقائي عند التمرير
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('.section');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href').substring(1) === current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
